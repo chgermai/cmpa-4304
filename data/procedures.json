@@ -1,0 +1,56 @@
+[
+  {
+    "id": "flapping-circuit",
+    "title": "Flapping Circuit",
+    "category": "Connectivity",
+    "severity": "Medium",
+    "symptom": "A circuit repeatedly drops and returns, generating repeated link up/down alerts.",
+    "keywords": ["flap", "link down", "link up", "unstable", "circuit"],
+    "checks": [
+      "Confirm the circuit has flapped more than the alert threshold in the last 15 minutes.",
+      "Check whether planned maintenance covers this circuit.",
+      "Check whether a carrier ticket is already open.",
+      "Confirm a redundant path exists and is carrying traffic."
+    ],
+    "resolution": [
+      "Take the circuit out of service following the standard removal process.",
+      "Confirm traffic has moved to the redundant path.",
+      "Open or update a carrier ticket with the flap times.",
+      "Note the actions taken in the incident record."
+    ],
+    "escalate_if": [
+      "No redundant path exists, or traffic has not moved.",
+      "More than one circuit at the same site is flapping.",
+      "The circuit is a core or backbone link.",
+      "You cannot confirm the checks above."
+    ],
+    "escalate_to": "On-call network engineer"
+  },
+  {
+    "id": "bgp-neighbor-down",
+    "title": "BGP Neighbor Down",
+    "category": "Routing",
+    "severity": "High",
+    "symptom": "A BGP session to a neighbor is down and the routes learned from that neighbor are missing.",
+    "keywords": ["bgp", "neighbor", "peer", "session down", "routing", "idle"],
+    "checks": [
+      "Confirm the alert is current and the session is still down.",
+      "Check whether planned maintenance covers this neighbor.",
+      "Check the state of the physical link to the neighbor.",
+      "Check whether the neighbor is reachable from the router."
+    ],
+    "resolution": [
+      "If the link is down, follow the Flapping Circuit procedure.",
+      "If the link is up but the neighbor is unreachable, contact the neighbor's operations team.",
+      "Confirm the session returns to the established state.",
+      "Note the actions taken in the incident record."
+    ],
+    "escalate_if": [
+      "The neighbor is an upstream provider or the only path out.",
+      "The session has been down for more than 15 minutes.",
+      "Traffic is affected at more than one site.",
+      "You cannot confirm the checks above."
+    ],
+    "escalate_to": "On-call network engineer"
+  }
+]

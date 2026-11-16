@@ -1,0 +1,9 @@
+body { font-family: Arial, Helvetica, sans-serif; margin: 0; color: #222; background: #fff; }
+.site-header { background: #333; color: #fff; padding: 16px 24px; }
+.site-header h1 { margin: 0; font-size: 1.4rem; }
+main { max-width: 900px; margin: 0 auto; padding: 24px; }
+.card { border: 1px solid #bbb; border-radius: 6px; padding: 16px; margin-bottom: 16px; }
+.card h3 { margin: 0 0 8px; }
+.tag { display: inline-block; border: 1px solid #888; border-radius: 12px; padding: 2px 10px; font-size: 0.8rem; margin-right: 6px; }
+.escalate { border: 2px solid #222; padding: 12px; margin-top: 12px; }
+.note { color: #666; font-size: 0.85rem; }
