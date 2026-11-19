@@ -1,56 +1,524 @@
 [
   {
-    "id": "flapping-circuit",
-    "title": "Flapping Circuit",
-    "category": "Connectivity",
-    "severity": "Medium",
-    "symptom": "A circuit repeatedly drops and returns, generating repeated link up/down alerts.",
-    "keywords": ["flap", "link down", "link up", "unstable", "circuit"],
+    "id": "rb-01",
+    "title": "Provider Enforces Undocumented Route Limit",
+    "category": "BGP & Routing",
+    "severity": "TBD",
+    "symptom": "One office loses connectivity to a public service endpoint; its only path used one BGP session that was torn down. Likely cause: The upstream provider had a hidden limit on routes accepted from us, and normal growth crossed it.",
+    "keywords": [
+      "bgp",
+      "route limit",
+      "provider",
+      "single path",
+      "office"
+    ],
     "checks": [
-      "Confirm the circuit has flapped more than the alert threshold in the last 15 minutes.",
-      "Check whether planned maintenance covers this circuit.",
-      "Check whether a carrier ticket is already open.",
-      "Confirm a redundant path exists and is carrying traffic."
+      "Check session state and any max-prefix or teardown reason on both sides.",
+      "Ask the provider what limit they enforce."
     ],
     "resolution": [
-      "Take the circuit out of service following the standard removal process.",
-      "Confirm traffic has moved to the redundant path.",
-      "Open or update a carrier ticket with the flap times.",
-      "Note the actions taken in the incident record."
+      "Have the provider raise the limit substantially.",
+      "Verify: Session re-establishes and the office reaches the endpoint.",
+      "Afterwards: Add a second, independent internet path from a different provider.",
+      "Afterwards: Get provider-side limits documented."
     ],
     "escalate_if": [
-      "No redundant path exists, or traffic has not moved.",
-      "More than one circuit at the same site is flapping.",
-      "The circuit is a core or backbone link.",
-      "You cannot confirm the checks above."
+      "TBD"
     ],
-    "escalate_to": "On-call network engineer"
+    "escalate_to": "TBD"
   },
   {
-    "id": "bgp-neighbor-down",
-    "title": "BGP Neighbor Down",
-    "category": "Routing",
-    "severity": "High",
-    "symptom": "A BGP session to a neighbor is down and the routes learned from that neighbor are missing.",
-    "keywords": ["bgp", "neighbor", "peer", "session down", "routing", "idle"],
+    "id": "rb-02",
+    "title": "Provider Maintains Both Redundant Circuits At Once",
+    "category": "Redundancy & Maintenance",
+    "severity": "TBD",
+    "symptom": "A facility loses nearly all outbound paths for several hours. Most of its routes are normally advertised from another site. Likely cause: The two circuits between the sites were the two the provider serviced at the same time.",
+    "keywords": [
+      "maintenance",
+      "redundant circuits",
+      "provider",
+      "outbound",
+      "routes"
+    ],
     "checks": [
-      "Confirm the alert is current and the session is still down.",
-      "Check whether planned maintenance covers this neighbor.",
-      "Check the state of the physical link to the neighbor.",
-      "Check whether the neighbor is reachable from the router."
+      "Check provider maintenance notices for every circuit between the two sites."
     ],
     "resolution": [
-      "If the link is down, follow the Flapping Circuit procedure.",
-      "If the link is up but the neighbor is unreachable, contact the neighbor's operations team.",
-      "Confirm the session returns to the established state.",
-      "Note the actions taken in the incident record."
+      "Nothing to fix; the outage ends when maintenance finishes and both circuits return.",
+      "Verify: Both circuits are up and routes are advertised again.",
+      "Afterwards: Watch for overlapping maintenance windows on redundant circuits.",
+      "Afterwards: Document a manual backup path."
     ],
     "escalate_if": [
-      "The neighbor is an upstream provider or the only path out.",
-      "The session has been down for more than 15 minutes.",
-      "Traffic is affected at more than one site.",
-      "You cannot confirm the checks above."
+      "TBD"
     ],
-    "escalate_to": "On-call network engineer"
+    "escalate_to": "TBD"
+  },
+  {
+    "id": "rb-03",
+    "title": "Stuck Input Buffer Drops Multicast On One Port",
+    "category": "Multicast, Timing & Hardware",
+    "severity": "TBD",
+    "symptom": "Multicast through one specific port is dropped, causing a monitoring outage for a downstream system. Discards climb steadily. Likely cause: A stuck internal buffer, a known issue with that hardware model.",
+    "keywords": [
+      "multicast",
+      "port",
+      "buffer",
+      "discards",
+      "hardware",
+      "firmware"
+    ],
+    "checks": [
+      "Check discard counters on the port and the vendor's known-issue list for that model."
+    ],
+    "resolution": [
+      "Shut down the affected interface to stop the loss.",
+      "Verify: Monitoring recovers and discards stop.",
+      "Afterwards: Upgrade firmware on the surrounding hardware as the permanent fix.",
+      "Afterwards: Match symptoms against vendor bug lists early."
+    ],
+    "escalate_if": [
+      "TBD"
+    ],
+    "escalate_to": "TBD"
+  },
+  {
+    "id": "rb-05",
+    "title": "Retiring Old Routers Pulls Routes From The New Ones",
+    "category": "BGP & Routing",
+    "severity": "TBD",
+    "symptom": "About 10 minutes of lost connectivity to an outside office and several broadcast channels while shutting down a temporary bridge between old and new routers. Likely cause: The new routers still relied on the old ones to advertise certain routes to the provider.",
+    "keywords": [
+      "decommission",
+      "migration",
+      "route advertisement",
+      "bridge",
+      "routers"
+    ],
+    "checks": [
+      "Check whether a bridge or old device was just shut down or removed, and which routes it advertised."
+    ],
+    "resolution": [
+      "Revert the change immediately.",
+      "Verify: The path to the outside office and channels is restored.",
+      "Afterwards: Before decommissioning, map everything still leaning on the old gear, not just its original role.",
+      "Afterwards: Let the new routers advertise their routes independently first."
+    ],
+    "escalate_if": [
+      "TBD"
+    ],
+    "escalate_to": "TBD"
+  },
+  {
+    "id": "rb-06",
+    "title": "Replacement Switch Auto-Loads A Stale Configuration",
+    "category": "Addressing & Switching",
+    "severity": "TBD",
+    "symptom": "Object storage behind content delivery loses connectivity during a hardware swap for a memory fault. Likely cause: The replacement switch auto-loaded a leftover, incompatible configuration, breaking the switch pairing it needed.",
+    "keywords": [
+      "switch swap",
+      "stale config",
+      "auto configuration",
+      "pairing",
+      "storage"
+    ],
+    "checks": [
+      "Check what configuration the new switch actually loaded at setup."
+    ],
+    "resolution": [
+      "Take over configuration directly, restore the correct ports, and shift traffic to unaffected sites.",
+      "Recovery took about 1.5 hours.",
+      "Verify: Storage access is confirmed clean.",
+      "Afterwards: Require a clean, verified starting configuration before any replacement switch connects to the live network."
+    ],
+    "escalate_if": [
+      "TBD"
+    ],
+    "escalate_to": "TBD"
+  },
+  {
+    "id": "rb-07",
+    "title": "Mismatched Link Bundle After A Router Swap",
+    "category": "Addressing & Switching",
+    "severity": "TBD",
+    "symptom": "A national sports feed returns playback errors shortly after an edge router is swapped to another vendor's hardware. Likely cause: The new router's multi-link bundle to a downstream appliance was configured slightly differently from what the other end expected.",
+    "keywords": [
+      "link aggregation",
+      "router swap",
+      "broadcast",
+      "playback errors",
+      "downstream appliance"
+    ],
+    "checks": [
+      "Check bundle (link aggregation) settings on both ends of every link to the downstream appliance."
+    ],
+    "resolution": [
+      "Correct the configuration.",
+      "Playback returned about 25 minutes after the first report.",
+      "Verify: The logical connection is up and playback is clean.",
+      "Afterwards: Run a post-change check of every downstream dependency before closing a hardware swap."
+    ],
+    "escalate_if": [
+      "TBD"
+    ],
+    "escalate_to": "TBD"
+  },
+  {
+    "id": "rb-08",
+    "title": "Multicast Joins Ignored After A Hardware Migration",
+    "category": "Multicast, Timing & Hardware",
+    "severity": "TBD",
+    "symptom": "Broadcast receivers lose multicast subscriptions after moving to new network hardware. Likely cause: A required setting enabling multicast routing was not applied on one interface, so join requests were never answered.",
+    "keywords": [
+      "multicast",
+      "migration",
+      "routing",
+      "interface",
+      "broadcast receivers"
+    ],
+    "checks": [
+      "Check that multicast routing is enabled on every interface involved in the migration."
+    ],
+    "resolution": [
+      "Apply the missing setting.",
+      "No rollback was needed.",
+      "Verify: Test a device joining from multiple locations.",
+      "Afterwards: Review routing protocols as carefully as cabling in a migration.",
+      "Afterwards: Keep an open item with the vendor to confirm no similar surprises."
+    ],
+    "escalate_if": [
+      "TBD"
+    ],
+    "escalate_to": "TBD"
+  },
+  {
+    "id": "rb-09",
+    "title": "Resync Wipes Settings Applied Outside The Management Platform",
+    "category": "Change & Config Management",
+    "severity": "TBD",
+    "symptom": "Monitoring for a whole site goes dark and virtualization hosts falsely appear offline after a resync on the management platform. Likely cause: Interface configurations applied directly on the command line were unknown to the platform and were erased.",
+    "keywords": [
+      "config management",
+      "resync",
+      "backup",
+      "monitoring",
+      "command line"
+    ],
+    "checks": [
+      "Check interface configs on the affected switches against the last backup."
+    ],
+    "resolution": [
+      "Restore the lost interface configurations from the separate network backup system.",
+      "Verify: Monitoring returns once the configs are reapplied.",
+      "Afterwards: Make every change through the tool, with no side doors.",
+      "Afterwards: Update standard templates so no unmanaged workaround is needed."
+    ],
+    "escalate_if": [
+      "TBD"
+    ],
+    "escalate_to": "TBD"
+  },
+  {
+    "id": "rb-10",
+    "title": "Duplicate Loopback Addresses On New Leaf Switches",
+    "category": "Addressing & Switching",
+    "severity": "TBD",
+    "symptom": "Signal is lost across a set of broadcast feeds from one facility during live events. Likely cause: Two new leaf switches had a loopback address already used by existing switches.",
+    "keywords": [
+      "loopback",
+      "ip conflict",
+      "leaf switches",
+      "broadcast",
+      "live events"
+    ],
+    "checks": [
+      "Check loopback addresses on newly deployed switches against existing ones."
+    ],
+    "resolution": [
+      "Shut down the conflicting uplinks and reassign the new switches.",
+      "Verify: Feeds are restored.",
+      "Afterwards: Keep the address-in-use check as a standing step for new hardware."
+    ],
+    "escalate_if": [
+      "TBD"
+    ],
+    "escalate_to": "TBD"
+  },
+  {
+    "id": "rb-11",
+    "title": "Pairing Feature Enabled On Switches With No Partner",
+    "category": "Addressing & Switching",
+    "severity": "TBD",
+    "symptom": "After maintenance, new hosts on a virtual network segment reach each other but nothing outside it. Likely cause: Two leaf switches had switch pairing enabled with no actual partner, leaving an internal control interface down and breaking the tunneling.",
+    "keywords": [
+      "switch pairing",
+      "virtual network",
+      "tunneling",
+      "leaf switches",
+      "segment"
+    ],
+    "checks": [
+      "Check whether pairing is configured on switches that have no partner, and the state of the control interface."
+    ],
+    "resolution": [
+      "Remove the leftover pairing configuration and bring the control interface up.",
+      "Verify: Hosts reach destinations outside the segment.",
+      "Afterwards: Confirm a switch is configured the way a new feature expects before go-live."
+    ],
+    "escalate_if": [
+      "TBD"
+    ],
+    "escalate_to": "TBD"
+  },
+  {
+    "id": "rb-12",
+    "title": "Fiber Cut Causes Asymmetric Routing And A Second Regional Outage",
+    "category": "BGP & Routing",
+    "severity": "TBD",
+    "symptom": "After a fiber cut, failover did not behave as designed. Traffic left by one path and returned by another, and security devices dropped it. An emergency single-path fix then broke two other regions. Likely cause: Asymmetric routing through stateful security devices. The two other regions were missing route announcements needed for the forced path.",
+    "keywords": [
+      "fiber cut",
+      "failover",
+      "asymmetric routing",
+      "firewall",
+      "regions"
+    ],
+    "checks": [
+      "Compare outbound and return paths for affected flows.",
+      "List which regions lose routes under the forced path."
+    ],
+    "resolution": [
+      "Force traffic through the single healthy path, then check every region that change touches.",
+      "Revert once the fiber is repaired.",
+      "Verify: Flows are symmetric and no other region lost reachability.",
+      "Afterwards: Add the missing route announcements.",
+      "Afterwards: Remove temporary workarounds rather than living with them."
+    ],
+    "escalate_if": [
+      "TBD"
+    ],
+    "escalate_to": "TBD"
+  },
+  {
+    "id": "rb-16",
+    "title": "Out-Of-Process Routing Edit Leaks A More Specific Route",
+    "category": "BGP & Routing",
+    "severity": "TBD",
+    "symptom": "A publishing platform loses connectivity during a cloud networking migration, and a bad route appears from a legacy environment. Likely cause: An engineer troubleshooting something else edited routing outside the change process, leaking a more specific route that wins over the general one.",
+    "keywords": [
+      "route leak",
+      "change management",
+      "legacy",
+      "specific route",
+      "migration"
+    ],
+    "checks": [
+      "Check recent routing edits on the legacy environment, and which specific prefix is being advertised."
+    ],
+    "resolution": [
+      "Revert the edit.",
+      "The route disappeared about 20 minutes after the ticket opened.",
+      "Verify: The offending prefix is gone from the table and the platform is reachable.",
+      "Afterwards: Route in-flight troubleshooting changes through approval before they touch anything live."
+    ],
+    "escalate_if": [
+      "TBD"
+    ],
+    "escalate_to": "TBD"
+  },
+  {
+    "id": "rb-17",
+    "title": "Maintenance On The Last Surviving Undersea Path",
+    "category": "Redundancy & Maintenance",
+    "severity": "TBD",
+    "symptom": "Two continents lose connectivity entirely. Likely cause: The primary undersea link was already down awaiting a repair ship, and planned maintenance took out the only remaining path.",
+    "keywords": [
+      "subsea cable",
+      "maintenance",
+      "single point of failure",
+      "vendor",
+      "intercontinental"
+    ],
+    "checks": [
+      "Check the status of every path between the sites, including long-running repairs, and any maintenance scheduled on the survivor."
+    ],
+    "resolution": [
+      "The vendor tried remote restoration without success.",
+      "An on-site power cycle of a piece of equipment brought connectivity back.",
+      "Verify: Both sites are reachable over the restored path.",
+      "Afterwards: Check for other planned maintenance before scheduling your own.",
+      "Afterwards: Do not let a temporary single point of failure become permanent."
+    ],
+    "escalate_if": [
+      "TBD"
+    ],
+    "escalate_to": "TBD"
+  },
+  {
+    "id": "rb-18",
+    "title": "Redistribution Conflict Stops A Data Center Advertising Itself",
+    "category": "BGP & Routing",
+    "severity": "TBD",
+    "symptom": "A data center loses internet and cloud connectivity and several streaming platforms show error spikes. The change looked fine right after being applied. Likely cause: A policy change to match a new internal standard conflicted with static route redistribution, so the site stopped announcing its own address space.",
+    "keywords": [
+      "route redistribution",
+      "policy change",
+      "static routes",
+      "data center",
+      "advertisement"
+    ],
+    "checks": [
+      "Check whether the site's prefixes are still being advertised upstream, a few minutes after any policy change."
+    ],
+    "resolution": [
+      "Revert both routers to the previous configuration.",
+      "Recovery followed in about 10 minutes.",
+      "Verify: Prefixes are visible externally again and error rates are back to normal.",
+      "Afterwards: Wait for the change's real effect before closing the post-change check.",
+      "Afterwards: Classify this kind of change as higher risk."
+    ],
+    "escalate_if": [
+      "TBD"
+    ],
+    "escalate_to": "TBD"
+  },
+  {
+    "id": "rb-19",
+    "title": "A And B Feeds Share A Hidden Dependency",
+    "category": "Redundancy & Maintenance",
+    "severity": "TBD",
+    "symptom": "Several live events lose picture, fully or partly, with gaps in the recorded archives. Likely cause: One facility's maintenance took the A path to both destination data centers. Both sites then reconnected through the same shared recovery path, flooding and degrading the B feed.",
+    "keywords": [
+      "a/b feeds",
+      "redundancy",
+      "live events",
+      "multicast",
+      "shared dependency"
+    ],
+    "checks": [
+      "Check whether A and B share an originating facility or a recovery path."
+    ],
+    "resolution": [
+      "Mitigate the shared recovery path.",
+      "Feeds stabilized about 1 hour 20 minutes after mitigation began.",
+      "Verify: Both feeds are clean and archives are recording.",
+      "Afterwards: Send A and B to entirely separate destinations.",
+      "Afterwards: Review the whole path end to end for shared dependencies."
+    ],
+    "escalate_if": [
+      "TBD"
+    ],
+    "escalate_to": "TBD"
+  },
+  {
+    "id": "rb-21",
+    "title": "Cleanup Removes Links A Precision Timing Protocol Needs",
+    "category": "Multicast, Timing & Hardware",
+    "severity": "TBD",
+    "symptom": "Playback problems appear across live streaming platforms, with timing alerts, after a network cleanup. Likely cause: Links thought redundant were needed for precision timing traffic, and the remaining paths could not carry it the same way.",
+    "keywords": [
+      "ptp",
+      "timing",
+      "cleanup",
+      "redundant links",
+      "streaming"
+    ],
+    "checks": [
+      "Check whether the removed links carried timing traffic, and compare the timing alerts' start time against the change."
+    ],
+    "resolution": [
+      "Revert the cleanup.",
+      "This was done within about 1 hour of the first alerts.",
+      "Verify: Timing alerts clear.",
+      "Afterwards: Preserve enough dedicated paths for timing traffic before any further cleanup."
+    ],
+    "escalate_if": [
+      "TBD"
+    ],
+    "escalate_to": "TBD"
+  },
+  {
+    "id": "rb-22",
+    "title": "Load Balancer Service Engines Crash Repeatedly",
+    "category": "Platform Services",
+    "severity": "TBD",
+    "symptom": "Service engines crash repeatedly over about a week, isolated to one newly created group. Likely cause: A known vendor bug tied to memory reserved for debug and trace logging. The new group had missed a safeguard the rest of the fleet had.",
+    "keywords": [
+      "load balancer",
+      "crash",
+      "vendor bug",
+      "debug logging",
+      "service engines"
+    ],
+    "checks": [
+      "Check whether the failing group matches the settings of the stable fleet, and the debug-logging memory reservation."
+    ],
+    "resolution": [
+      "Turn the debug and trace memory setting down to the minimum.",
+      "The group stayed stable for well over a day.",
+      "Verify: No crashes occur and the vendor case is closed.",
+      "Afterwards: Plan the software upgrade the vendor recommended.",
+      "Afterwards: Check that new groups inherit lessons learned by older ones."
+    ],
+    "escalate_if": [
+      "TBD"
+    ],
+    "escalate_to": "TBD"
+  },
+  {
+    "id": "rb-24",
+    "title": "Circuit Change Takes A Few Hundred Live Channels Off The Air",
+    "category": "Redundancy & Maintenance",
+    "severity": "TBD",
+    "symptom": "Publishing for a few hundred live channels stops for about 20 minutes after routine circuit maintenance at one data center. Likely cause: The change landed on infrastructure that had quietly become load-bearing for many channels.",
+    "keywords": [
+      "circuit",
+      "change management",
+      "live channels",
+      "publishing",
+      "data center"
+    ],
+    "checks": [
+      "Check what rides on the circuit before you change it."
+    ],
+    "resolution": [
+      "Revert as soon as the impact is clear.",
+      "Channels returned almost immediately.",
+      "Verify: Channel publishing counts are back to normal.",
+      "Afterwards: Move the busiest channels to a healthier data center.",
+      "Afterwards: Treat small changes to shared circuits as high impact."
+    ],
+    "escalate_if": [
+      "TBD"
+    ],
+    "escalate_to": "TBD"
+  },
+  {
+    "id": "rb-27",
+    "title": "BGP Sessions Drop Silently On A Legacy Router With A Known Firmware Bug",
+    "category": "BGP & Routing",
+    "severity": "TBD",
+    "symptom": "A legacy data center router drops its BGP sessions to the cloud with no log cause. Several unrelated tools and teams page at once. Likely cause: A known vendor bug in old firmware, fixed in a newer release never installed because the site was being retired. Legacy tools and a login service all routed through that one router.",
+    "keywords": [
+      "bgp",
+      "firmware",
+      "legacy router",
+      "vendor bug",
+      "dependencies"
+    ],
+    "checks": [
+      "Check the firmware version against vendor known-bug lists, and which tools and services depend on this router for cloud access."
+    ],
+    "resolution": [
+      "Open a case with the vendor and recover the sessions.",
+      "Treat the simultaneous pages as one incident.",
+      "Verify: Sessions are up and the dependent tools, including deployments and login, work again.",
+      "Afterwards: Patch or isolate hardware even when it is slated for retirement.",
+      "Afterwards: Map what leans on a single legacy path."
+    ],
+    "escalate_if": [
+      "TBD"
+    ],
+    "escalate_to": "TBD"
   }
 ]
