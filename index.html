@@ -8,13 +8,49 @@
   </head>
   <body>
     <header class="site-header">
-      <h1>Network Operations Runbook</h1>
+      <a class="site-title" href="#">Network Operations Runbook</a>
     </header>
+
     <main>
-      <h2>Procedures</h2>
-      <div id="procedure-list"></div>
-      <p class="note">Sample content.</p>
+      <!-- Browse / Search Results view -->
+      <section id="browse-view" aria-labelledby="browse-heading">
+        <h1 id="browse-heading" tabindex="-1">Find a procedure</h1>
+
+        <div class="search-bar">
+          <label for="search">Search by symptom, keyword or title</label>
+          <input
+            id="search"
+            type="search"
+            placeholder="e.g. bgp, multicast, maintenance"
+            autocomplete="off"
+            aria-describedby="search-hint"
+          />
+          <p id="search-hint" class="hint">Press <kbd>/</kbd> to search, <kbd>Esc</kbd> to clear.</p>
+        </div>
+
+        <div id="category-chips" class="chips" role="group" aria-label="Filter by category"></div>
+
+        <p id="result-count" class="result-count" aria-live="polite"></p>
+
+        <div id="procedure-list" class="procedure-list">
+          <p class="status">Loading procedures…</p>
+        </div>
+
+        <div id="no-results" class="no-results" hidden>
+          <h2>No procedures match <span id="no-results-query"></span></h2>
+          <p>Try a different word, or clear the search and category filter.</p>
+        </div>
+
+        <aside class="escalate-note">
+          <strong>Can't find your issue?</strong>
+          Escalate to the on-call network engineer.
+        </aside>
+      </section>
+
+      <!-- Procedure view (filled by js/app.js) -->
+      <section id="procedure-view" hidden></section>
     </main>
+
     <script src="js/app.js"></script>
   </body>
 </html>
