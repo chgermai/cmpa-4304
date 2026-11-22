@@ -18,6 +18,7 @@ body {
   line-height: 1.5;
   color: var(--ink);
   background: #fff;
+  overflow-wrap: anywhere; /* long IDs/strings wrap instead of widening the page */
 }
 
 a { color: var(--ink); }
@@ -141,6 +142,14 @@ kbd {
 /* Narrow screens: one column, escalation panel first so it stays prominent. */
 @media (max-width: 760px) {
   main { padding: 16px; }
+  .site-header { padding: 14px 16px; }
+  .chip { min-height: 44px; padding: 8px 16px; } /* recommended touch-target size */
+  .back-link { padding: 10px 0; }
   .proc-layout { grid-template-columns: 1fr; gap: 16px; }
   .escalate-panel { order: -1; position: static; }
+}
+
+/* Hide the "/" and Esc hint on touch devices with no physical keyboard. */
+@media (hover: none) and (pointer: coarse) {
+  .hint { display: none; }
 }

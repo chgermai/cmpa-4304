@@ -11,6 +11,7 @@
 - "Escalate if…" sidebar with heavy border; collapses above the steps on narrow screens. Missing/"TBD" values render as a visible "Not defined yet" badge instead of being hidden or guessed.
 - Keyboard: `/` focuses search, `Esc` clears it, focus moves to the heading on each view change, visible focus outlines.
 - Loading and load-error states.
+- Mobile pass: 44px chip touch targets, tighter header padding, long strings wrap, keyboard hint hidden on touch devices.
 
 **What worked**
 - Hash routing kept it to one HTML page with no build step and no nginx changes.
