@@ -1,12 +1,20 @@
-/* Grayscale to match the P01 wireframes. Colors live in variables so the
-   P02 visual pass can change them in one place. */
+/* Palette: Blue Zodiac, Tiara, Fountain Blue, Regent Gray.
+   Contrast notes (WCAG): Fountain Blue (2.1:1) and Regent Gray (3.4:1) are
+   too light for text on white, so they are used only for fills, borders
+   and accents. --muted is a darker Regent Gray (7.3:1) for secondary text.
+   All colors live here so they can be changed in one place. */
 :root {
-  --ink: #1f1f1f;
-  --muted: #5c5c5c;
-  --line: #c4c4c4;
-  --panel: #f2f2f2;
-  --strong: #1f1f1f;
-  --focus: #000;
+  --zodiac: #0c243c;   /* Blue Zodiac: text, header, strong borders */
+  --tiara: #c9d1d5;    /* Tiara: light borders */
+  --fountain: #55c2c3; /* Fountain Blue: accents only */
+  --regent: #7e8c9c;   /* Regent Gray: form/UI borders (3:1 is enough) */
+
+  --ink: var(--zodiac);
+  --muted: #4a5868;    /* darker Regent Gray, readable as text */
+  --line: var(--tiara);
+  --panel: #eef2f4;    /* pale Tiara tint for panels */
+  --strong: var(--zodiac);
+  --focus: var(--zodiac);
 }
 
 * { box-sizing: border-box; }
@@ -29,7 +37,11 @@ h1:focus, h1:focus-visible { outline: none; } /* focused by script only */
 [hidden] { display: none !important; }
 
 /* Header */
-.site-header { background: #333; padding: 14px 24px; }
+.site-header {
+  background: var(--zodiac);
+  border-bottom: 4px solid var(--fountain);
+  padding: 14px 24px;
+}
 .site-title { color: #fff; font-size: 1.25rem; font-weight: 700; text-decoration: none; }
 
 main { max-width: 1100px; margin: 0 auto; padding: 24px; }
@@ -42,9 +54,11 @@ h1 { font-size: 1.75rem; margin: 0 0 16px; }
   max-width: 640px;
   font: inherit;
   padding: 10px 12px;
-  border: 2px solid var(--muted);
+  color: var(--ink);
+  border: 2px solid var(--regent);
   border-radius: 6px;
 }
+.search-bar input:focus { border-color: var(--zodiac); }
 .hint { color: var(--muted); font-size: 0.85rem; margin: 6px 0 16px; }
 kbd {
   border: 1px solid var(--line);
@@ -60,20 +74,27 @@ kbd {
   font: inherit;
   font-size: 0.9rem;
   padding: 6px 14px;
-  border: 1px solid var(--muted);
+  border: 1px solid var(--regent);
   border-radius: 999px;
   background: #fff;
   color: var(--ink);
   cursor: pointer;
 }
 .chip:hover { background: var(--panel); }
-.chip[aria-pressed="true"] { background: var(--strong); border-color: var(--strong); color: #fff; }
+/* Selected: Fountain Blue fill with Blue Zodiac text (7.4:1). */
+.chip[aria-pressed="true"] {
+  background: var(--fountain);
+  border-color: var(--zodiac);
+  color: var(--zodiac);
+  font-weight: 600;
+}
 
 .result-count { color: var(--muted); font-size: 0.9rem; margin: 0 0 12px; }
 
 /* Cards */
 .procedure-list { display: grid; gap: 12px; }
 .card { border: 1px solid var(--line); border-radius: 6px; padding: 16px; }
+.card:hover { border-color: var(--regent); }
 .card-title { font-size: 1.1rem; margin: 0 0 6px; }
 .card-title a { text-decoration: none; }
 .card-title a:hover { text-decoration: underline; }
@@ -82,7 +103,7 @@ kbd {
 .meta { display: flex; flex-wrap: wrap; gap: 6px; }
 .tag {
   display: inline-block;
-  border: 1px solid var(--muted);
+  border: 1px solid var(--regent);
   border-radius: 12px;
   padding: 1px 10px;
   font-size: 0.8rem;
@@ -92,7 +113,7 @@ kbd {
 /* Empty / status states */
 .status { color: var(--muted); }
 .status.error { color: var(--ink); font-weight: 600; }
-.no-results { border: 1px dashed var(--muted); border-radius: 6px; padding: 16px; }
+.no-results { border: 1px dashed var(--regent); border-radius: 6px; padding: 16px; }
 .no-results h2 { font-size: 1.1rem; margin: 0 0 4px; }
 .no-results p { margin: 0; }
 .escalate-note {
@@ -126,12 +147,20 @@ kbd {
   position: sticky;
   top: 16px;
 }
-.escalate-panel h2 { font-size: 1.1rem; margin: 0 0 8px; }
+/* Heading strip: negative margins pull it out to the panel's border edge. */
+.escalate-panel h2 {
+  font-size: 1.1rem;
+  margin: -16px -16px 12px;
+  padding: 10px 16px;
+  background: var(--zodiac);
+  color: #fff;
+  border-radius: 3px 3px 0 0;
+}
 .escalate-panel ul { margin: 0 0 12px; padding-left: 1.2em; }
 .escalate-to { margin: 12px 0 0; }
 .not-defined {
   display: inline-block;
-  border: 1px dashed var(--muted);
+  border: 1px dashed var(--regent);
   border-radius: 4px;
   padding: 2px 8px;
   color: var(--muted);

@@ -8,7 +8,7 @@ Plain HTML, CSS and JavaScript. No framework, no build step, no dependencies.
 
 ```
 index.html            Page shell: header, Browse view, empty Procedure view
-css/styles.css        All styles (grayscale, responsive below 760px)
+css/styles.css        All styles (color variables at the top, responsive below 760px)
 js/app.js             Loads the data, search, filters, procedure view
 data/procedures.json  The procedures (the only file you edit to add content)
 docs/build-log.md     Session notes
