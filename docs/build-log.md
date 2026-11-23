@@ -24,3 +24,25 @@
 **Next**
 - Content review of procedures (wording, anonymization, history lines inside `resolution[]`).
 - P02: move data to a database + API; keep field names stable so `app.js` only needs a new fetch URL.
+
+## 2026-11-22 (later) — Docs, color scheme, deployment fixes
+
+**Done**
+- README now documents how the data is processed, the procedure format (field table, example entry), how to add a procedure, and a validation command.
+- Applied a color scheme based on Blue Zodiac `#0C243C`, Tiara `#C9D1D5`, Fountain Blue `#55C2C3` and Regent Gray `#7E8C9C`. All colors are CSS variables at the top of `css/styles.css`.
+- Deployment: the VM had been recreated, and its web root was a copied snapshot of the files rather than a git clone. Converted it in place into a git checkout of `main`, so deploying is now `git pull` on the server.
+- Blocked nginx from serving the `.git` folder (returns 403).
+- Plain-HTTP requests by IP were returning 404 for every page. Added a catch-all redirect so the IP now forwards to the HTTPS site, https://chgermai.duckdns.org.
+
+**What worked**
+- Checking color contrast before applying the palette. Fountain Blue (2.1:1) and Regent Gray (3.4:1) are too light for text on white, so they're used for fills, accents and borders; secondary text uses a darker Regent Gray (`#4A5868`, 7.3:1).
+- Comparing the server's files to the repo history by git hash before overwriting showed the server held an exact copy of an earlier commit, so nothing was lost.
+- Validating nginx config (`nginx -t`) and backing up the config before every reload.
+
+**What didn't / notes**
+- The IP 404s started when Certbot set up HTTPS. Its port-80 block loaded first, became the default for unmatched hosts, and returned 404. Lesson: after adding HTTPS, test every URL people might use, not just the new one.
+- Recreating the VM changed its SSH host key, which triggers a "host identification changed" warning. Verify the new fingerprint from the cloud console before trusting it, rather than deleting the old key blindly.
+
+**Next**
+- Submit https://chgermai.duckdns.org as the P01 URL.
+- Consider redeploying automatically on push (for example a GitHub Action that runs `git pull` over SSH) for P02.
